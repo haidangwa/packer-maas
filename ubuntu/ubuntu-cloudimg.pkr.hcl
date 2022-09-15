@@ -94,21 +94,24 @@ build {
       "CLOUDIMG_CUSTOM_KERNEL=${var.kernel}",
       "DEBIAN_FRONTEND=noninteractive"
     ]
+    remote_folder = "/root/"
     scripts = ["${path.root}/scripts/cloudimg/install-custom-kernel.sh"]
   }
 
   provisioner "file" {
-    destination = "/tmp/"
+    destination = "/root/"
     sources     = ["${path.root}/scripts/cloudimg/curtin-hooks"]
   }
 
   provisioner "shell" {
     environment_vars = ["CLOUDIMG_CUSTOM_KERNEL=${var.kernel}"]
+    remote_folder = "/root/"
     scripts          = ["${path.root}/scripts/cloudimg/setup-curtin.sh"]
   }
 
   provisioner "shell" {
     environment_vars = ["DEBIAN_FRONTEND=noninteractive"]
+    remote_folder = "/root/"
     scripts          = ["${path.root}/scripts/cloudimg/cleanup.sh"]
   }
 
