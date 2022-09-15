@@ -21,7 +21,7 @@ OVMF_VARS.fd: /usr/share/OVMF/OVMF_VARS.fd
 	cp -v $< $@
 
 custom-cloudimg.tar.gz: clean
-	sudo ${PACKER} init . && sudo PACKER_LOG=1 ${PACKER} build -var customize_script=scripts/customize-with-chef-solo.sh -var ubuntu_series=bionic -only='cloudimg.*' .
+	sudo ${PACKER} init . && sudo PACKER_LOG=1 ${PACKER} build -var customize_script=scripts/customize-with-chef-solo.sh -only='cloudimg.*' .
 
 custom-ubuntu.tar.gz: clean seeds-flat.iso OVMF_VARS.fd \
 			packages/custom-packages.tar.gz
