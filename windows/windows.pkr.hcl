@@ -8,10 +8,10 @@ packer {
   }
 }
 
-source "qemu" "windows_server_2016" {
-  iso_url          = var.win2016_iso_path
+source "qemu" "windows_server_2019" {
+  iso_url          = var.win2019_iso_path
   iso_checksum     = "none"
-  output_directory = "output-windows2016"
+  output_directory = "output-windows2019"
   shutdown_command = "c:\\windows\\system32\\sysprep\\sysprep.exe /oobe /generalize /mode:vm /shutdown"
   qemu_binary      = "/usr/libexec/qemu-kvm"
   ram_size         = "4096"
@@ -25,7 +25,7 @@ source "qemu" "windows_server_2016" {
   winrm_username   = "Administrator"
   winrm_password   = "Password"
   winrm_port       = "5986"
-  vm_name          = "Win2016VM"
+  vm_name          = "Win2019VM"
   net_device       = "virtio-net"
   disk_interface   = "virtio-scsi"
   headless         = "false"
@@ -36,7 +36,7 @@ source "qemu" "windows_server_2016" {
 }
 
 build {
-  sources = ["source.qemu.windows_server_2016"]
+  sources = ["source.qemu.windows_server_2019"]
 
   provisioner "powershell" {
     inline = [

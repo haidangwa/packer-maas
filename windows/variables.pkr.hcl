@@ -19,9 +19,9 @@ variable "trend_micro_ds_agent_url" {
   type = string
 }
 
-variable "win2016_iso_path" {
+variable "win2019_iso_path" {
   type    = string
-  default = "${env("WIN2016_ISO_PATH")}"
+  default = "${env("WIN2019_ISO_PATH")}"
 }
 
 variable "windows_version" {
