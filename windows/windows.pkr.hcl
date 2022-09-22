@@ -8,21 +8,6 @@ packer {
   }
 }
 
-variable "powershell_scripts_home" {
-  type    = string
-  default = "ps_scripts"
-}
-
-variable "windows_version" {
-  type    = string
-  default = "${env("WINVER")}"
-}
-
-variable "win2016_iso_path" {
-  type    = string
-  default = "${env("WIN2016_ISO_PATH")}"
-}
-
 source "qemu" "windows_server_2016" {
   iso_url          = var.win2016_iso_path
   iso_checksum     = "none"
@@ -44,7 +29,7 @@ source "qemu" "windows_server_2016" {
   net_device       = "virtio-net"
   disk_interface   = "virtio-scsi"
   headless         = "false"
-  cd_files         = ["./autounattend.xml", "./3rd_party_apps/*", "./ps_scripts"]
+  cd_files         = ["./autounattend.xml", "./3rd_party_apps/*", "./ps_scripts/public_cloud"]
   cd_label         = "customization_media"
   boot_wait        = "5m"
   boot_command     = "<enter>"
@@ -55,6 +40,20 @@ build {
 
   provisioner "powershell" {
     inline = [
+      "if(!(test-path c:\\dtss\\installers\\ms)){ New-Item -Path c:\\dtss\\installers\\ms -ItemType Directory -Force -Confirm:$false }",
+      "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12",
+      "Write-Output 'Downloading Chef Infra Client...'",
+      "Invoke-WebRequest ${var.chef_client_url} -OutFile 'c:\\dtss\\chef.msi'",
+      "Write-Output 'Downloading WinSSHD settings.wst...'",
+      "Invoke-WebRequest ${var.winsshd_settings_url} -OutFile 'c:\\dtss\\settings.wst'",
+      "Write-Output 'Downloading WinSSHD installer...'",
+      "Invoke-WebRequest ${var.winsshd_installer_url} -OutFile 'c:\\dtss\\winsshd.exe'",
+      "Write-Output 'Downloading tanium-init.dat...'",
+      "Invoke-WebRequest ${var.tanium_init_dat_url} -OutFile 'c:\\dtss\\installers\\ms\\tanium-init.dat'",
+      "Write-Output 'Downloading taniumclient.exe...'",
+      "Invoke-WebRequest ${var.taniumclient_url} -OutFile 'c:\\dtss\\installers\\ms\\taniumclient.exe'",
+      "Write-Output 'Downloading Trend Micro DS Agent installer...'",
+      "Invoke-WebRequest ${var.trend_micro_ds_agent_url} -OutFile 'c:\\dtss\\installers\\ms\\agent.msi'",
       "Write-Output 'Removing SNMP and SMBv1'",
       "Remove-WindowsFeature SNMP-Service,FS-SMB1 -Confirm:$false -ErrorAction SilentlyContinue"
     ]

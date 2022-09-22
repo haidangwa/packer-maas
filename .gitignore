@@ -13,7 +13,8 @@ packer_cache
 ubuntu/*_VARS.fd
 ubuntu/packages/*.deb
 ubuntu/packages/*.bin
-ubuntu/packages/*.tar.gz
+**/*.tar.gz
 .vscode
-3rd_party_apps/*
-ps_scripts/*
+windows/3rd_party_apps/*
+windows/ps_scripts/*
+windows/*.pkrvars.hcl
