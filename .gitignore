@@ -15,3 +15,5 @@ ubuntu/packages/*.deb
 ubuntu/packages/*.bin
 ubuntu/packages/*.tar.gz
 .vscode
+3rd_party_apps/*
+ps_scripts/*
