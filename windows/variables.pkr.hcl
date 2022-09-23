@@ -11,6 +11,10 @@ locals {
     "amd64" = "host"
     "arm64" = "cortex-a57"
   }
+  uefi_imp = {
+    "amd64" = "OVMF"
+    "arm64" = "AAVMF"
+  }
 }
 
 variable "architecture" {

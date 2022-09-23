@@ -14,8 +14,8 @@ source "qemu" "windows_server_2019" {
   output_directory = "output-windows2019"
   shutdown_command = "c:\\windows\\system32\\sysprep\\sysprep.exe /oobe /generalize /mode:vm /shutdown"
   qemu_binary      = "qemu-system-${lookup(local.qemu_arch, var.architecture, "")}"
-  memory           = "4096"
-  disk_size        = "51200M"
+  memory           = "8G"
+  disk_size        = "50G"
   cpus             = "4"
   format           = "qcow2"
   accelerator      = "kvm"
@@ -27,16 +27,20 @@ source "qemu" "windows_server_2019" {
   winrm_port       = "5986"
   vm_name          = "Win2019VM"
   net_device       = "virtio-net"
+  machine_type     = "q35"
   disk_interface   = "virtio-scsi"
   headless         = "false"
-  cd_files         = ["./autounattend.xml", "./3rd_party_apps/*", "./ps_scripts/public_cloud"]
+  cd_files         = ["./autounattend.xml"]
   cd_label         = "customization_media"
   boot_wait        = "5m"
-  boot_command     = ["<enter>"]
+  boot_command     = ["<enter><wait><f6><wait><esc><wait>", "<enter>"]
   qemuargs = [
     ["-serial", "stdio"],
     ["-cpu", "${lookup(local.qemu_cpu, var.architecture, "")}"],
-    ["-display", "none"]
+    ["-display", "none"],
+    ["-net", "nic,model=rtl8139"],
+    ["-bios", "/usr/share/edk2-ovmf/x64/OVMF_CODE.fd"],
+    ["-device", "virtio-rng-pci"]
   ]
 
 }
@@ -63,16 +67,6 @@ build {
       "Write-Output 'Removing SNMP and SMBv1'",
       "Remove-WindowsFeature SNMP-Service,FS-SMB1 -Confirm:$false -ErrorAction SilentlyContinue"
     ]
-  }
-
-  provisioner "powershell" {
-    scripts = ["${var.powershell_scripts_home}/common/win_reg.ps1", "${var.powershell_scripts_home}/common/post_install_task.ps1"]
-  }
-
-  provisioner "windows-restart" {
-    pause_before          = "10s"
-    restart_check_command = "powershell -command \"& {Write-Output 'restarted.'}\""
-    restart_timeout       = "2h"
   }
 
   post-processor "shell-local" {
