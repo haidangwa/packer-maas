@@ -39,7 +39,7 @@ source "qemu" "windows_server_2019" {
     ["-cpu", "${lookup(local.qemu_cpu, var.architecture, "")}"],
     ["-display", "none"],
     ["-net", "nic,model=rtl8139"],
-    ["-bios", "/usr/share/edk2-ovmf/x64/OVMF_CODE.fd"],
+    ["-bios", "/usr/share/OVMF/OVMF_CODE.fd"],
     ["-device", "virtio-rng-pci"]
   ]
 
