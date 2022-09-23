@@ -1,3 +1,24 @@
+locals {
+  qemu_arch = {
+    "amd64" = "x86_64"
+    "arm64" = "aarch64"
+  }
+  qemu_machine = {
+    "amd64" = "pc,accel=kvm"
+    "arm64" = "virt"
+  }
+  qemu_cpu = {
+    "amd64" = "host"
+    "arm64" = "cortex-a57"
+  }
+}
+
+variable "architecture" {
+  type        = string
+  default     = "amd64"
+  description = "The architecture to build the image for (amd64 or arm64)"
+}
+
 variable "chef_client_url" {
   type = string
 }

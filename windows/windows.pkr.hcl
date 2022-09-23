@@ -13,8 +13,8 @@ source "qemu" "windows_server_2019" {
   iso_checksum     = "none"
   output_directory = "output-windows2019"
   shutdown_command = "c:\\windows\\system32\\sysprep\\sysprep.exe /oobe /generalize /mode:vm /shutdown"
-  qemu_binary      = "/usr/libexec/qemu-kvm"
-  ram_size         = "4096"
+  qemu_binary      = "qemu-system-${lookup(local.qemu_arch, var.architecture, "")}"
+  memory           = "4096"
   disk_size        = "51200M"
   cpus             = "4"
   format           = "qcow2"
@@ -32,7 +32,13 @@ source "qemu" "windows_server_2019" {
   cd_files         = ["./autounattend.xml", "./3rd_party_apps/*", "./ps_scripts/public_cloud"]
   cd_label         = "customization_media"
   boot_wait        = "5m"
-  boot_command     = "<enter>"
+  boot_command     = ["<enter>"]
+  qemuargs = [
+    ["-serial", "stdio"],
+    ["-cpu", "${lookup(local.qemu_cpu, var.architecture, "")}"],
+    ["-display", "none"]
+  ]
+
 }
 
 build {
