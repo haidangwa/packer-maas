@@ -14,7 +14,7 @@ source "qemu" "windows_server_2019" {
   output_directory = "output-windows2019"
   shutdown_command = "c:\\windows\\system32\\sysprep\\sysprep.exe /oobe /generalize /mode:vm /shutdown"
   qemu_binary      = "qemu-system-${lookup(local.qemu_arch, var.architecture, "")}"
-  memory           = "8G"
+  memory           = "8000"
   disk_size        = "50G"
   cpus             = "4"
   format           = "qcow2"
